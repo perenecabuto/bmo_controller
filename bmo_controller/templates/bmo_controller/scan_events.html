@@ -1,0 +1,12 @@
+{% load static %}
+
+<script type="text/javascript" src="{% static 'bmo_controller/js/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'bmo_controller/js/scan.js' %}"></script>
+<script>
+$(function() {
+    $('#event-list').scanEvents("{% url 'bmo_scan_json_events' %}");
+});
+</script>
+
+<ul id="event-list">
+</ul>
