@@ -4,9 +4,12 @@ from django.db import models
 
 
 class Command(models.Model):
-    label = models.CharField(max_length=255)
+    label = models.CharField(unique=True, max_length=255)
     type = models.CharField(max_length=64)
     code = models.CharField(max_length=64)
+
+    class Meta:
+        unique_together = ("type", "code")
 
 
 class Listener(models.Model):

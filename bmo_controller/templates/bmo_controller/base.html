@@ -1,0 +1,21 @@
+{% load static %}
+
+<html>
+    <head>
+    {% block head %}
+        <script type="text/javascript" src="{% static 'bmo_controller/js/jquery.js' %}"></script>
+        <script>
+        $(function() {
+            $('.post-link').on('click', function(e) {
+                e.preventDefault();
+                $('<form action="' + this.href + '" method="POST" />').submit();
+            });
+        });
+        </script>
+    {% endblock %}
+    </head>
+    <body>
+    {% block content %}
+    {% endblock %}
+    </body>
+</html>

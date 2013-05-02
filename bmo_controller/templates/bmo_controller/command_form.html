@@ -1,0 +1,11 @@
+{% extends 'bmo_controller/base.html' %}
+
+{% block content %}
+<div class="command_form">
+    <form method="POST" action="">
+        {{ csrf_token }}
+        {{ form.as_p }}
+        <input type="submit" value="save">
+    </form>
+</div>
+{% endblock %}

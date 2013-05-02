@@ -2,10 +2,45 @@
 
 import json
 
-from django.views.generic.list import BaseListView, ListView
+from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse
+from django.views.generic.list import BaseListView, ListView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-from bmo_controller.models import Events
+from bmo_controller.models import Command, Events
+from bmo_controller.forms import CommandForm
+
+# Command
+
+
+class BaseCommandMixin(object):
+    form_class = CommandForm
+    model = Command
+    success_url = reverse_lazy('bmo_command_list')
+
+
+class CommandCreateFormView(BaseCommandMixin, CreateView):
+    template_name = "bmo_controller/command_form.html"
+
+    def get_initial(self):
+        if self.request.method == 'GET':
+            return {k: str(v) for k, v in self.request.GET.items()}
+
+
+class CommandUpdateFormView(BaseCommandMixin, UpdateView):
+    template_name = "bmo_controller/command_form.html"
+
+
+class CommandDeleteFormView(BaseCommandMixin, DeleteView):
+    pass
+
+
+class CommandListView(ListView):
+    template_name = "bmo_controller/command_list.html"
+    model = Command
+
+
+# Events
 
 
 class EventsMixin(object):
