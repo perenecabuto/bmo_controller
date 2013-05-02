@@ -20,3 +20,18 @@ Completar 433
 Completar IR
 Montar cirtcuito
 Completar logica emissores e receptores
+
+
+Layout
+------
+
+Usar bootsrap
+Deixar interface amigavel
+
+
+Deploy
+------
+
+Configurar django
+Instalar app
+Instalar no server
