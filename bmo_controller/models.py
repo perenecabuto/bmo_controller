@@ -5,6 +5,8 @@ import subprocess
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from .driver import BmoDriver
+
 
 class Command(models.Model):
     label = models.CharField(unique=True, max_length=255)
@@ -15,6 +17,9 @@ class Command(models.Model):
         return self.label
 
     def execute(self):
+        driver = BmoDriver()
+        driver.send_code(self.type, self.code)
+
         for listener in self.listener_set.all():
             listener.execute()
 
@@ -30,8 +35,10 @@ class Listener(models.Model):
     def execute(self):
         if self.system_command.strip():
             subprocess.call(self.system_command.split(" "))
-        elif self.can_execute():
-            self.trigger_command.execute()
+        elif self.trigger_command:
+            print "other"
+            driver = BmoDriver()
+            driver.send_code(self.trigger_command.type, self.trigger_command.code)
 
     def save(self, **kwargs):
 

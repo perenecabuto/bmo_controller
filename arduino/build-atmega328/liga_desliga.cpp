@@ -48,7 +48,7 @@ void loop() {
         Serial.println(json);
     }
 
-    delay(100);
+    delay(30);
 }
 
 String getScanJSON(const char * type, long code, int bitLength, int protocol) {
