@@ -10,6 +10,13 @@
                 e.preventDefault();
                 $('<form action="' + this.href + '" method="POST" />').submit();
             });
+
+            $('.ajax-link').live('click', function(e) {
+                e.preventDefault();
+                $.ajax({ url: this.href });
+
+                return false;
+            });
         });
         </script>
     {% endblock %}

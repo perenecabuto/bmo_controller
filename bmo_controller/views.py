@@ -5,13 +5,17 @@ import json
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse
+
+from django.views.generic import View
 from django.views.generic.list import BaseListView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-from bmo_controller.models import Command, Events
+from bmo_controller.models import Command, Listener, Events
 from bmo_controller.forms import (
     CommandForm, ListenerFormSet
 )
+
+from bmo_controller.driver import BmoDriver
 
 # Command
 
@@ -27,7 +31,8 @@ class BaseCommandMixin(object):
         if self.request.method == 'POST':
             self.listener_formset = ListenerFormSet(self.request.POST)
         else:
-            self.listener_formset = ListenerFormSet(queryset=self.object.listener_set.all())
+            qs = self.object.listener_set.all() if self.object else Listener.objects.none()
+            self.listener_formset = ListenerFormSet(queryset=qs)
             self.listener_formset.data.update(self.request.GET)
 
         return form
@@ -40,6 +45,8 @@ class BaseCommandMixin(object):
 
     def form_valid(self, form):
         if self.listener_formset.is_valid():
+            self.object = form.save()
+
             for f in self.listener_formset.forms:
                 listener = f.save(commit=False)
                 listener.command = self.object
@@ -102,3 +109,14 @@ class ScanEventsJSONView(EventsMixin, BaseListView):
         ]
 
         return HttpResponse(json.dumps(messages, ))
+
+
+# Replay
+
+class ReplayCodeView(View):
+
+    def get(self, request, *args, **kwargs):
+        driver = BmoDriver()
+        driver.send_code(kwargs.get('type'), kwargs.get('code'))
+
+        return HttpResponse('ok')

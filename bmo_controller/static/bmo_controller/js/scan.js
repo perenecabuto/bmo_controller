@@ -16,7 +16,10 @@ $.fn.scanEvents = function(eventsUrl) {
                 for (var i = 0; i < events.length; i++) {
                     var e = events[i];
                     newEvents.push(
-                        '<li>At ' + e.date + ': ' + JSON.stringify(e.message) + '</li>'
+                        '<li>At ' + e.date + ': ' + JSON.stringify(e.message)
+                        + '<a href="/replay/'+ e.message.type +'/'+ e.message.code +'" class="ajax-link">replay</a> '
+                        + '<a href="/command/new?type='+ e.message.type +'&code='+ e.message.code +'">save</a> '
+                        + '</li>'
                     );
                 }
 
