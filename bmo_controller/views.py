@@ -120,3 +120,12 @@ class ReplayCodeView(View):
         driver.send_code(kwargs.get('type'), kwargs.get('code'))
 
         return HttpResponse('ok')
+
+
+class ExectuteCommandView(View):
+
+    def get(self, request, *args, **kwargs):
+        command = Command.objects.get(id=kwargs.get('command_id'))
+        command.execute()
+
+        return HttpResponse('ok')

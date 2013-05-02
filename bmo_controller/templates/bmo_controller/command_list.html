@@ -7,6 +7,7 @@
     {% for command in command_list %}
     <li>
         <span class="label">{{ command.label }}</span>
+        <a href="{% url 'bmo_execute_command' command_id=command.id %}" class="ajax-link">execute</a>
         <a href="{% url 'bmo_replay_command' code=command.code type=command.type %}" class="ajax-link">replay</a>
         <a href="{% url 'bmo_command_update' pk=command.id %}">edit</a>
         <a href="{% url 'bmo_command_delete' pk=command.id %}" class="post-link">remove</a>

@@ -15,7 +15,7 @@ class Command(models.Model):
         return self.label
 
     def execute(self):
-        for listener in self.listener_set:
+        for listener in self.listener_set.all():
             listener.execute()
 
     class Meta:

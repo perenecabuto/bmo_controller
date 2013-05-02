@@ -5,7 +5,7 @@ from django.conf.urls import patterns, url
 from .views import (
     ScanEventsView, ScanEventsJSONView,
     CommandCreateFormView, CommandUpdateFormView, CommandDeleteFormView, CommandListView,
-    ReplayCodeView,
+    ReplayCodeView, ExectuteCommandView,
 )
 
 urlpatterns = patterns(
@@ -18,5 +18,6 @@ urlpatterns = patterns(
     url(r'^commands/?$', CommandListView.as_view(), name='bmo_command_list'),
 
     url(r'^replay/(?P<type>\w+)/(?P<code>\w+)$', ReplayCodeView.as_view(), name='bmo_replay_command'),
+    url(r'^execute/(?P<command_id>\d+)$', ExectuteCommandView.as_view(), name='bmo_execute_command'),
 )
 
