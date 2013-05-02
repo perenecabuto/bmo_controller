@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import subprocess
+
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -7,6 +10,13 @@ class Command(models.Model):
     label = models.CharField(unique=True, max_length=255)
     type = models.CharField(max_length=64)
     code = models.CharField(max_length=64)
+
+    def __unicode__(self):
+        return self.label
+
+    def execute(self):
+        for listener in self.listener_set:
+            listener.execute()
 
     class Meta:
         unique_together = ("type", "code")
@@ -17,12 +27,18 @@ class Listener(models.Model):
     system_command = models.CharField(max_length=255, null=True, blank=True)
     trigger_command = models.ForeignKey(Command, related_name="trigger_command", null=True, blank=True)
 
+    def execute(self):
+        if self.system_command.strip():
+            subprocess.call(self.system_command.split(" "))
+        elif self.can_execute():
+            self.trigger_command.execute()
+
     def save(self, **kwargs):
 
         if not self.system_command and not self.trigger_command:
-            raise ListenerStateException("system_command or trigger_command should be defined")
+            raise ValidationError("system_command or trigger_command should be defined")
 
-        self.save(**kwargs)
+        return super(Listener, self).save(**kwargs)
 
 
 class Events(models.Model):

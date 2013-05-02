@@ -15,6 +15,10 @@
     {% endblock %}
     </head>
     <body>
+        <div class="menu">
+            <a href="{% url 'bmo_scan_events' %}">scan events</a>
+            <a href="{% url 'bmo_command_list' %}">command list</a>
+        </div>
     {% block content %}
     {% endblock %}
     </body>

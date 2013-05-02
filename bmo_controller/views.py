@@ -2,13 +2,16 @@
 
 import json
 
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse
 from django.views.generic.list import BaseListView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from bmo_controller.models import Command, Events
-from bmo_controller.forms import CommandForm
+from bmo_controller.forms import (
+    CommandForm, ListenerFormSet
+)
 
 # Command
 
@@ -17,6 +20,35 @@ class BaseCommandMixin(object):
     form_class = CommandForm
     model = Command
     success_url = reverse_lazy('bmo_command_list')
+
+    def get_form(self, form):
+        form = super(BaseCommandMixin, self).get_form(form)
+
+        if self.request.method == 'POST':
+            self.listener_formset = ListenerFormSet(self.request.POST)
+        else:
+            self.listener_formset = ListenerFormSet(queryset=self.object.listener_set.all())
+            self.listener_formset.data.update(self.request.GET)
+
+        return form
+
+    def get_context_data(self, **kwargs):
+        context_data = super(BaseCommandMixin, self).get_context_data(**kwargs)
+        context_data['listener_formset'] = self.listener_formset
+
+        return context_data
+
+    def form_valid(self, form):
+        if self.listener_formset.is_valid():
+            for f in self.listener_formset.forms:
+                listener = f.save(commit=False)
+                listener.command = self.object
+                try:
+                    listener.save()
+                except ValidationError:
+                    pass
+
+        return super(BaseCommandMixin, self).form_valid(form)
 
 
 class CommandCreateFormView(BaseCommandMixin, CreateView):

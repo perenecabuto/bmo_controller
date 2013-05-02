@@ -3,8 +3,19 @@
 {% block content %}
 <div class="command_form">
     <form method="POST" action="">
-        {{ csrf_token }}
+        {% csrf_token %}
         {{ form.as_p }}
+
+        <hr />
+
+        <ul>
+
+        {{ listener_formset.management_form }}
+        {% for listner_form in listener_formset.forms %}
+            <li>{{ listner_form.as_p }}</li>
+        {% endfor %}
+        </ul>
+
         <input type="submit" value="save">
     </form>
 </div>
