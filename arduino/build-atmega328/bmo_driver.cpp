@@ -1,14 +1,20 @@
 #include <Arduino.h>
 #include <RCSwitch.h>
+#include <IRremote.h>
 
 #define RF315 1
 #define RF433 2
 #define IR1 3
 #define IR2 4
 
-#define RF315_TX_DPORT 10
+#define RF315_TX_PIN 10
 #define RF315_RX_IRQ 1 // Dport 4
 #define RF315_PULSE_LEN 297
+
+#define IR1_RX_PIN 12
+
+
+decode_results results;
 
 struct {
     long code;
@@ -25,6 +31,9 @@ char * getBMOTypeName(int type);
 
 
 RCSwitch rf315 = RCSwitch();
+IRrecv ir1RX(IR1_RX_PIN);
+
+
 String msg = "";
 String json = "";
 boolean messageCompleted = false;
@@ -33,9 +42,11 @@ boolean messageCompleted = false;
 void setup() {
     Serial.begin(9600);
 
-    rf315.enableTransmit(RF315_TX_DPORT);
+    rf315.enableTransmit(RF315_TX_PIN);
     rf315.enableReceive(RF315_RX_IRQ);
     rf315.setPulseLength(RF315_PULSE_LEN);
+
+    ir1RX.enableIRIn();
 }
 
 void loop() {
@@ -81,9 +92,9 @@ bmo_message parseBMOMessage(String msg) {
 }
 
 void sendCode(bmo_message message) {
+    // TODO: retornar json de mensagem recebida
     switch (message.type) {
         case RF315:
-            Serial.println(message.code);
             // TODO: pegar codigo e protocolo
             rf315.send(message.code, 24);
             break;
@@ -107,6 +118,12 @@ String getBMOJson() {
         rf315.resetAvailable();
         delay(30);
     }
+
+    if (ir1RX.decode(&results)) {
+        bmoJson += getScanJSON(getBMOTypeName(IR1), results.value, NULL, NULL);
+        ir1RX.resume();
+    }
+
 
     return bmoJson;
 }

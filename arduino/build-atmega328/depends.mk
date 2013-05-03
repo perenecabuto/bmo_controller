@@ -9,4 +9,5 @@ build-atmega328/bmo_driver.o: build-atmega328/bmo_driver.cpp \
  /usr/share/arduino/hardware/arduino/cores/arduino/Printable.h \
  /usr/share/arduino/hardware/arduino/cores/arduino/new.h \
  /usr/share/arduino/hardware/arduino/variants/standard/pins_arduino.h \
- /usr/share/arduino/libraries/RCswitch/RCSwitch.h
+ /usr/share/arduino/libraries/RCswitch/RCSwitch.h \
+ /usr/share/arduino/libraries/IRremote/IRremote.h
