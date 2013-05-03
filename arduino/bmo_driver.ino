@@ -80,9 +80,9 @@ bmo_message parseBMOMessage(String msg) {
 }
 
 void sendCode(bmo_message message) {
+    // TODO: retornar json de mensagem recebida
     switch (message.type) {
         case RF315:
-            Serial.println(message.code);
             // TODO: pegar codigo e protocolo
             rf315.send(message.code, 24);
             break;
