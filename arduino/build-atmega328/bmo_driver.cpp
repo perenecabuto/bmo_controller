@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <RCSwitch.h>
 
 #define RF315 1

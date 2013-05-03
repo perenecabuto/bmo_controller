@@ -5,28 +5,26 @@
 #define IR1 3
 #define IR2 4
 
-#define RF315_TX_DPORT 10
-#define RF315_RX_IRQ 1 // Dport 4
-#define RF315_PULSE_LEN 297
+# define RF315_TX_DPORT 10
+# define RF315_RX_IRQ 0 // Dport 4
+# define RF315_PULSE_LEN 297
 
-struct {
-    long code;
+struct bmo_message {
+    int code;
     int type;
 } typedef bmo_message;
 
 String getBMOJson();
 String getScanJSON(const char * type, long code, int bitLength, int protocol);
-
 void sendCode(bmo_message message);
 bmo_message parseBMOMessage(String msg);
 int parseBMOType(char * bmoType);
-char * getBMOTypeName(int type);
 
 
 RCSwitch rf315 = RCSwitch();
+
 String msg = "";
 String json = "";
-boolean messageCompleted = false;
 
 
 void setup() {
@@ -38,19 +36,16 @@ void setup() {
 }
 
 void loop() {
-    messageCompleted = !Serial.available();
+    msg = "";
 
     while (Serial.available()) {
         msg += (char) Serial.read();
     }
 
-    if (msg != "" && messageCompleted) {
-        bmo_message message = parseBMOMessage(msg);
+    bmo_message parsedMessage = parseBMOMessage(msg);
 
-        sendCode(message);
-
-        msg = "";
-        messageCompleted = false;
+    if (parsedMessage.code) {
+        sendCode(parsedMessage);
     }
 
     json = getBMOJson();
@@ -59,96 +54,74 @@ void loop() {
         Serial.println(json);
     }
 
-    delay(10);
+    delay(30);
 }
 
 
-// RF315 9221153
-
 bmo_message parseBMOMessage(String msg) {
-    char bmoMessage[128];
-    char bmoType[8];
+    char * bmoMessage;
+    char * bmoType;
     bmo_message message;
-    long code;
 
     msg.toCharArray(bmoMessage, 128);
-    sscanf(bmoMessage, "%s %ld", bmoType, &message.code);
+    sscanf(bmoMessage, "%s %d", bmoType, &message.code);
+    free(bmoMessage);
 
     message.type = parseBMOType(bmoType);
 
     return message;
 }
 
+int parseBMOType(char * bmoType) {
+    if (strncmp("RF315", bmoType,  sizeof(bmoType))) {
+        return RF315;
+    }
+    else if (strncmp("RF433", bmoType,  sizeof(bmoType))) {
+        return RF433;
+    }
+    else if (strncmp("IR1", bmoType,  sizeof(bmoType))) {
+        return IR1;
+    }
+}
+
 void sendCode(bmo_message message) {
     switch (message.type) {
         case RF315:
-            Serial.println(message.code);
             // TODO: pegar codigo e protocolo
             rf315.send(message.code, 24);
             break;
     }
 }
 
-
 String getBMOJson() {
     String bmoJson = "";
 
+    Serial.println("json - 1");
     if (rf315.available()) {
         long value = rf315.getReceivedValue();
 
         if (value != 0) {
-            bmoJson += getScanJSON(getBMOTypeName(RF315), value,
+            bmoJson += getScanJSON("rf315", value,
                 rf315.getReceivedBitlength(),
                 rf315.getReceivedProtocol()
             );
         }
 
         rf315.resetAvailable();
-        delay(30);
     }
+    Serial.println(bmoJson);
+    Serial.println("json - 2");
 
     return bmoJson;
 }
 
 String getScanJSON(const char * type, long code, int bitLength, int protocol) {
     char format[] = "{ \"type\": \"%s\", \"code\": %s, \"bits\": %d, \"protocol\": \"%d\" }",
-         buffer[200],
-         cCode[20];
+        buffer[200],
+        cCode[20];
 
     String(code).toCharArray(cCode, 20);
     sprintf(buffer, format, type, cCode, bitLength, protocol);
 
     return String(buffer);
-}
-
-
-int parseBMOType(char * bmoType) {
-    if (strncmp("RF315", bmoType, 8) == 0) {
-        return RF315;
-    }
-    else if (strncmp("RF433", bmoType, 8) == 0) {
-        return RF433;
-    }
-    else if (strncmp("IR1", bmoType,  8) == 0) {
-        return IR1;
-    }
-    else if (strncmp("IR2", bmoType,  8) == 0) {
-        return IR2;
-    }
-}
-
-char * getBMOTypeName(int type) {
-    switch (type) {
-        case RF315:
-            return "RF315";
-
-        case RF433:
-            return "RF433";
-
-        case IR1:
-            return "IR1";
-
-        case IR2:
-            return "IR2";
-    }
 }

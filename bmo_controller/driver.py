@@ -18,4 +18,4 @@ class BmoDriver(object):
 
     def send_code(self, signal_type, code):
         connection = self.get_connetion()
-        connection.write("%s\n" % code)
+        connection.write("%s %s\n" % (signal_type, code))

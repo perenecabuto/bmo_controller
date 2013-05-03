@@ -3,7 +3,7 @@ ARDMK_DIR     = /usr
 AVR_TOOLS_DIR = /usr
 
 BOARD_TAG    = atmega328
-ARDUINO_PORT = /dev/ttyUSB1
+ARDUINO_PORT = /dev/ttyUSB2
 ARDUINO_LIBS = RCswitch
 
 include /usr/share/arduino/Arduino.mk
