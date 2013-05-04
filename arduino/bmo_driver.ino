@@ -7,17 +7,16 @@
 #define IR2 4
 
 #define RF315_TX_PIN 10
-#define RF315_RX_IRQ 1 // Dport 4
+#define RF315_RX_IRQ 0 // D-PIN 3
 #define RF315_PULSE_LEN 297
 
 #define IR1_RX_PIN 12
 
-
-decode_results results;
-
 struct {
-    long code;
     int type;
+    long code;
+    int bits;
+    int protocol;
 } typedef bmo_message;
 
 String getBMOJson();
@@ -31,8 +30,9 @@ char * getBMOTypeName(int type);
 
 RCSwitch rf315 = RCSwitch();
 IRrecv ir1RX(IR1_RX_PIN);
+IRsend ir1TX;
 
-
+decode_results results;
 String msg = "";
 String json = "";
 boolean messageCompleted = false;
@@ -78,14 +78,14 @@ void loop() {
 
 bmo_message parseBMOMessage(String msg) {
     char bmoMessage[128];
-    char bmoType[8];
+    char bmoTypeName[8];
     bmo_message message;
     long code;
 
     msg.toCharArray(bmoMessage, 128);
-    sscanf(bmoMessage, "%s %ld", bmoType, &message.code);
+    sscanf(bmoMessage, "%s %ld %d %d", bmoTypeName, &message.code, &message.bits, &message.protocol);
 
-    message.type = parseBMOType(bmoType);
+    message.type = parseBMOType(bmoTypeName);
 
     return message;
 }
@@ -94,9 +94,37 @@ void sendCode(bmo_message message) {
     // TODO: retornar json de mensagem recebida
     switch (message.type) {
         case RF315:
-            // TODO: pegar codigo e protocolo
-            rf315.send(message.code, 24);
+            rf315.send(message.code, message.bits);
             break;
+
+        case IR1:
+            switch (message.protocol) {
+                case NEC:
+                    ir1TX.sendNEC(message.code, message.bits);
+                    Serial.println("Ovo");
+                    break;
+                case SONY:
+                    ir1TX.sendSony(message.code, message.bits);
+                    break;
+                case RC5:
+                    ir1TX.sendRC5(message.code, message.bits);
+                    break;
+                case RC6:
+                    ir1TX.sendRC6(message.code, message.bits);
+                    break;
+                case DISH:
+                    ir1TX.sendDISH(message.code, message.bits);
+                    break;
+                case PANASONIC:
+                    ir1TX.sendPanasonic(message.code, message.bits);
+                    break;
+                case JVC:
+                    ir1TX.sendJVC(message.code, message.bits, 5);
+                    break;
+            }
+
+        ir1RX.enableIRIn();
+        ir1RX.resume();
     }
 }
 
@@ -119,7 +147,8 @@ String getBMOJson() {
     }
 
     if (ir1RX.decode(&results)) {
-        bmoJson += getScanJSON(getBMOTypeName(IR1), results.value, NULL, NULL);
+        long value = results.value;
+        bmoJson += getScanJSON(getBMOTypeName(IR1), value, results.bits, results.decode_type);
         ir1RX.resume();
     }
 
@@ -128,12 +157,10 @@ String getBMOJson() {
 }
 
 String getScanJSON(const char * type, long code, int bitLength, int protocol) {
-    char format[] = "{ \"type\": \"%s\", \"code\": %s, \"bits\": %d, \"protocol\": \"%d\" }",
-         buffer[200],
-         cCode[20];
+    char format[] = "{\"type\": \"%s\", \"code\": %ld, \"bits\": %d, \"protocol\": %d}",
+         buffer[200];
 
-    String(code).toCharArray(cCode, 20);
-    sprintf(buffer, format, type, cCode, bitLength, protocol);
+    sprintf(buffer, format, type, code, bitLength, protocol);
 
     return String(buffer);
 }
