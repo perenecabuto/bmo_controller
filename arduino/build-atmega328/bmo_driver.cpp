@@ -7,7 +7,7 @@
 #define IR1 3
 #define IR2 4
 
-#define RF315_TX_PIN 10
+#define RF315_TX_PIN 9
 #define RF315_RX_IRQ 0 // D-PIN 3
 #define RF315_PULSE_LEN 297
 
@@ -42,8 +42,8 @@ boolean messageCompleted = false;
 void setup() {
     Serial.begin(9600);
 
-    rf315.enableTransmit(RF315_TX_PIN);
     rf315.enableReceive(RF315_RX_IRQ);
+    rf315.enableTransmit(RF315_TX_PIN);
     rf315.setPulseLength(RF315_PULSE_LEN);
 
     ir1RX.enableIRIn();
@@ -95,14 +95,16 @@ void sendCode(bmo_message message) {
     // TODO: retornar json de mensagem recebida
     switch (message.type) {
         case RF315:
+            /*rf315.enableTransmit(RF315_TX_PIN);*/
+            ir1RX.resume();
             rf315.send(message.code, message.bits);
+            delay(20);
             break;
 
         case IR1:
             switch (message.protocol) {
                 case NEC:
                     ir1TX.sendNEC(message.code, message.bits);
-                    Serial.println("Ovo");
                     break;
                 case SONY:
                     ir1TX.sendSony(message.code, message.bits);
@@ -146,6 +148,7 @@ String getBMOJson() {
         rf315.resetAvailable();
         delay(30);
     }
+
 
     if (ir1RX.decode(&results)) {
         long value = results.value;
