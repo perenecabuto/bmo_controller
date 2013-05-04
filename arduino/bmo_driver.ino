@@ -101,7 +101,6 @@ void sendCode(bmo_message message) {
             switch (message.protocol) {
                 case NEC:
                     ir1TX.sendNEC(message.code, message.bits);
-                    Serial.println("Ovo");
                     break;
                 case SONY:
                     ir1TX.sendSony(message.code, message.bits);
