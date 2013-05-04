@@ -17,7 +17,7 @@ urlpatterns = patterns(
     url(r'^command/(?P<pk>\d+)/delete$', CommandDeleteFormView.as_view(), name='bmo_command_delete'),
     url(r'^commands/?$', CommandListView.as_view(), name='bmo_command_list'),
 
-    url(r'^replay/(?P<type>\w+)/(?P<code>\w+)$', ReplayCodeView.as_view(), name='bmo_replay_command'),
+    url(r'^replay/(?P<type>\w+)/(?P<code>\w+)/(?P<bits>\w+)/(?P<protocol>\w+)/?$', ReplayCodeView.as_view(), name='bmo_replay_command'),
     url(r'^execute/(?P<command_id>\d+)$', ExectuteCommandView.as_view(), name='bmo_execute_command'),
 )
 

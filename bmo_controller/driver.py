@@ -16,6 +16,6 @@ class BmoDriver(object):
 
         return Serial(port, 9600)
 
-    def send_code(self, signal_type, code):
+    def send_code(self, signal_type, code, bits=0, protocol=""):
         connection = self.get_connetion()
-        connection.write("%s %s\n" % (signal_type, code))
+        connection.write("%s %s %s %s\n" % (signal_type, code, bits, protocol))

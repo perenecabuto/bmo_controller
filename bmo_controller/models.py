@@ -10,21 +10,23 @@ from .driver import BmoDriver
 
 class Command(models.Model):
     label = models.CharField(unique=True, max_length=255)
-    type = models.CharField(max_length=64)
-    code = models.CharField(max_length=64)
+    type = models.CharField(max_length=32)
+    code = models.CharField(max_length=32)
+    bits = models.IntegerField()
+    protocol = models.CharField(max_length=32)
 
     def __unicode__(self):
         return self.label
 
     def execute(self):
         driver = BmoDriver()
-        driver.send_code(self.type, self.code)
+        driver.send_code(self.type, self.code, self.bits, self.protocol)
 
         for listener in self.listener_set.all():
             listener.execute()
 
     class Meta:
-        unique_together = ("type", "code")
+        unique_together = ("type", "code", "protocol", "bits")
 
 
 class Listener(models.Model):

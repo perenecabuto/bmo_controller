@@ -117,7 +117,7 @@ class ReplayCodeView(View):
 
     def get(self, request, *args, **kwargs):
         driver = BmoDriver()
-        driver.send_code(kwargs.get('type'), kwargs.get('code'))
+        driver.send_code(kwargs.get('type'), kwargs.get('code'), kwargs.get('bits'), kwargs.get('protocol'))
 
         return HttpResponse('ok')
 

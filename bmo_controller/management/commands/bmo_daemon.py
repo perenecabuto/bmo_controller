@@ -33,9 +33,10 @@ class Command(BaseCommand):
                 message = arduino.readline()
 
                 try:
-                    json.loads(message)
+                    if not isinstance(json.loads(message), dict):
+                        raise ValueError
                 except ValueError:
-                    print "Skiping malformed message"
+                    print "Skiping malformed message:\n\t%s\n" % message
                     continue
 
                 if getattr(settings, 'DEBUG', False):

@@ -14,12 +14,18 @@ $.fn.scanEvents = function(eventsUrl) {
                 lastEventDate = events[0].date;
 
                 for (var i = 0; i < events.length; i++) {
-                    var e = events[i];
+                    var e = events[i],
+                        m = e.message;
+
                     newEvents.push(
-                        '<li>At ' + e.date + ': ' + JSON.stringify(e.message)
-                        + '<a href="/replay/'+ e.message.type +'/'+ e.message.code +'" class="ajax-link">replay</a> '
-                        + '<a href="/command/new?type='+ e.message.type +'&code='+ e.message.code +'">save</a> '
-                        + '</li>'
+                        '<li>At ' + e.date + ': ' + JSON.stringify(m)
+                        + '<a href="/replay/'+ [m.type, m.code, m.bits, m.protocol].join("/") + '" class="ajax-link">replay</a> '
+                        + '<a href="/command/new'
+                        + '?type='+ m.type
+                        + '&code='+ m.code
+                        + '&bits='+ m.bits
+                        + '&protocol='+ m.protocol
+                        +'">save</a></li>'
                     );
                 }
 
