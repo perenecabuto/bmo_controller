@@ -32,8 +32,8 @@ namespace :deploy do
 
   desc "Restart Application"
   task :restart, :roles => :app do
-    run ". ~/virtualenvs/#{application}/bin/activate && pip install -r #{current_path}/deploy_requirements.txt"
-    run "cd #{current_path} && ~/virtualenvs/#{application}/bin/gunicorn wsgi -c gunicorn.conf"
+    run ". ~/virtualenvs/#{application}/bin/pip install -r #{current_path}/deploy_requirements.txt"
+    run "cd #{current_path} && DJANGO_SETTINGS_MODULE=settings ~/virtualenvs/#{application}/bin/gunicorn wsgi -c gunicorn.conf"
   end
 
   task :setup_virtualenv do
@@ -41,6 +41,19 @@ namespace :deploy do
   end
 
   after 'deploy:setup', 'deploy:setup_virtualenv'
+  after 'deploy:restart', 'bmo_daemon:start'
+end
+
+namespace :bmo_daemon do
+    task :start do
+        run "cd #{current_path} && PYTHONPATH=$PYTHONPATH:. DJANGO_SETTINGS_MODULE=settings nohup ~/virtualenvs/#{application}/bin/django-admin.py bmo_daemon >/dev/null 2>&1 &"
+    end
+
+    task :stop do
+        run "ps awx | grep 'bmo_daemo[n]' | cut -d' ' -f1 | xargs kill -9"
+    end
+
+    before 'bmo_daemon:start', 'bmo_daemon:stop'
 end
 
 namespace :log do
