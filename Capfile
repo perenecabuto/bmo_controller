@@ -32,7 +32,7 @@ namespace :deploy do
 
   desc "Restart Application"
   task :restart, :roles => :app do
-    run ". ~/virtualenvs/#{application}/bin/pip install -r #{current_path}/deploy_requirements.txt"
+    run "~/virtualenvs/#{application}/bin/pip install -r #{current_path}/deploy_requirements.txt"
     run "cd #{current_path} && DJANGO_SETTINGS_MODULE=settings ~/virtualenvs/#{application}/bin/gunicorn wsgi -c gunicorn.conf"
   end
 
