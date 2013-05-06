@@ -23,12 +23,24 @@ role :web, domain
 role :app, domain
 
 namespace :deploy do
+  task :start do ; end
+  task :stop do ; end
+
+  # this overrides a rails specific thing.
+  task :finalize_update do ; end
+  task :migrate         do ; end
+
   desc "Restart Application"
   task :restart, :roles => :app do
-    run "workon #{application}"
-    run "pip install -r #{current_path}/deploy_requirements.txt"
-    run "cd #{current_path} && gunicorn wsgi -c gunicorn.conf"
+    run ". ~/virtualenvs/#{application}/bin/activate && pip install -r #{current_path}/deploy_requirements.txt"
+    run "cd #{current_path} && ~/virtualenvs/#{application}/bin/gunicorn wsgi -c gunicorn.conf"
   end
+
+  task :setup_virtualenv do
+    run "virtualenv ~/virtualenvs/#{application}"
+  end
+
+  after 'deploy:setup', 'deploy:setup_virtualenv'
 end
 
 namespace :log do
