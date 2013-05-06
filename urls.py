@@ -9,5 +9,5 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    url(r'bmo_controller', include(bmo_urls)),
+    url(r'bmo_controller/', include(bmo_urls)),
 )
