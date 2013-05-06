@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import patterns, url
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic.base import RedirectView
 
 from .views import (
     ScanEventsView, ScanEventsJSONView,
@@ -10,6 +12,7 @@ from .views import (
 
 urlpatterns = patterns(
     '',
+    url(r'^$', RedirectView.as_view(url=reverse_lazy('bmo_command_list')), name='bmo_index'),
     url(r'^scan$', ScanEventsView.as_view(), name='bmo_scan_events'),
     url(r'^scan.json$', ScanEventsJSONView.as_view(), name='bmo_scan_json_events'),
     url(r'^command/new$', CommandCreateFormView.as_view(), name='bmo_command_create'),

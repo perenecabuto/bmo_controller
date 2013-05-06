@@ -15,10 +15,6 @@ Arduino
 -------
 
 Completar 433
-Trocar pino tx rf315
-Antenas
-Abaixar IRs
-Fazer furos IRs
 
 
 Layout

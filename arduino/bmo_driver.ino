@@ -1,12 +1,13 @@
 #include <RCSwitch.h>
 #include <IRremote.h>
+#include <avr/interrupt.h>
 
 #define RF315 1
 #define RF433 2
 #define IR1 3
 #define IR2 4
 
-#define RF315_TX_PIN 9
+#define RF315_TX_PIN 10
 #define RF315_RX_IRQ 0 // D-PIN 3
 #define RF315_PULSE_LEN 297
 
@@ -41,11 +42,11 @@ boolean messageCompleted = false;
 void setup() {
     Serial.begin(9600);
 
+    ir1RX.enableIRIn();
+
     rf315.enableReceive(RF315_RX_IRQ);
     rf315.enableTransmit(RF315_TX_PIN);
     rf315.setPulseLength(RF315_PULSE_LEN);
-
-    ir1RX.enableIRIn();
 }
 
 void loop() {
@@ -91,6 +92,8 @@ bmo_message parseBMOMessage(String msg) {
 }
 
 void sendCode(bmo_message message) {
+    cli();
+
     // TODO: retornar json de mensagem recebida
     switch (message.type) {
         case RF315:
@@ -128,6 +131,8 @@ void sendCode(bmo_message message) {
         ir1RX.enableIRIn();
         ir1RX.resume();
     }
+
+    sei();
 }
 
 
