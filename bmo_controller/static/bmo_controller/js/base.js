@@ -1,14 +1,12 @@
 $(function() {
-    $('.post-link').on('click', function(e) {
+    $('body').on('click', '.post-link', function(e) {
         e.preventDefault();
         $('<form action="' + this.href + '" method="POST" />').submit();
-    });
-
-    $('.ajax-link').on('mousedown', function(e) {
+    })
+    .on('mousedown', '.ajax-link', function(e) {
         $(this).attr('last-click', new Date().getMilliseconds());
-    });
-
-    $('body').on('click', '.ajax-link', function(e) {
+    })
+    .on('click', '.ajax-link', function(e) {
         var lastClick = $(this).attr('last-click'),
             interval = Math.abs(new Date().getMilliseconds() - lastClick);
 
