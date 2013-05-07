@@ -3,6 +3,8 @@ body {
 }
 
 .container {
+    width: auto !important;
+    max-width: 940px;
 }
 
 .command-btn,

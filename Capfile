@@ -33,6 +33,8 @@ namespace :deploy do
   desc "Restart Application"
   task :restart, :roles => :app do
     run "~/virtualenvs/#{application}/bin/pip install -r #{current_path}/deploy_requirements.txt"
+    run "killall -9 gunicorn"
+    run "rm #{current_path}/bmo_controller.sqlite3 && ln -sf #{shared_path}/bmo_controller.sqlite3 #{current_path}"
     run "cd #{current_path} && DJANGO_SETTINGS_MODULE=settings ~/virtualenvs/#{application}/bin/gunicorn wsgi -c gunicorn.conf"
   end
 
