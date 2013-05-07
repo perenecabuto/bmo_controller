@@ -8,14 +8,18 @@
         {{ form.as_p }}
         </fieldset>
 
-        <ul>
+        <fieldset>
+            <legend>Listeners (optional)</legend>
 
-        {{ listener_formset.management_form }}
-        {% for listner_form in listener_formset.forms %}
-            <li>{{ listner_form.as_p }}</li>
-        {% endfor %}
-        </ul>
+            <ol>
+            {{ listener_formset.management_form }}
+            {% for listner_form in listener_formset.forms %}
+                <li>{{ listner_form.as_p }}</li>
+            {% endfor %}
+            </ol>
+        </fieldset>
 
+        <br />
         <input type="submit" value="save">
     </form>
 </div>

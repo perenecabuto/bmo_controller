@@ -18,4 +18,5 @@ Completar 433
 Layout
 ------
 
+Poder arrastar commands
 Guardar configuracoes

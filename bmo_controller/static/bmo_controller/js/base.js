@@ -22,22 +22,15 @@ $(function() {
         return false;
     });
 
-    $('.nav li').each(function(idx, menuItem) {
-        var item = $(menuItem),
-            link = item.find('a:eq(0)'),
-            re = new RegExp('^.+://' + window.location.host),
-            currentUrl = window.location.href.replace(re, '').replace(/[\/#]$/, '');
-
-        if (link.attr('href') == currentUrl) {
-            item.addClass('active');
-        }
-    });
-
     $('[data-rand-cmd-colors]').on('click', function() {
         randCommandBtnColors();
         return false;
     });
 
+    // Add bootstrap error class to the django form css error class
+    $('.errorlist').addClass('text-error');
+
+    selectMenuItem();
     randCommandBtnColors();
 });
 
@@ -48,4 +41,20 @@ function randCommandBtnColors() {
 
         $(el).css('background-color', hue);
     });
+}
+
+function selectMenuItem() {
+    var links = $('.nav li a').sort(function (a, b) { return b.href.length - a.href.length });
+
+    for (var i = 0; i < links.length; i++) {
+        var link = $(links[i]),
+            item = link.parent('li'),
+            re = new RegExp('^.+://' + window.location.host),
+            currentUrl = window.location.href.replace(re, '').replace(/[\/#]$/, '').replace(/\?.*?$/, '');
+
+        if (currentUrl.match(link.attr('href'))) {
+            item.addClass('active');
+            break;
+        }
+    }
 }
