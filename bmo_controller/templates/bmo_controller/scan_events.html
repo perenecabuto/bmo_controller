@@ -6,12 +6,22 @@
     <script type="text/javascript" src="{% static 'bmo_controller/js/scan.js' %}"></script>
     <script>
     $(function() {
-        $('#event-list').scanEvents("{% url 'bmo_scan_json_events' %}");
+        $('#event-list tbody').scanEvents(
+            "{% url 'bmo_scan_json_events' %}",
+            "{% url 'bmo_command_create' %}",
+            "{% url 'bmo_replay_command' type='TYPE' code='CODE' protocol='PROTOCOL' bits='BITS' %}"
+        );
     });
     </script>
 {% endblock %}
 
 {% block content %}
-<ul id="event-list">
-</ul>
+<table class="table table-striped events-table" id="event-list">
+<thead>
+    <tr>
+        <th>Event time</th> <th>Type</th> <th>Code</th> <th>Bits</th> <th>Protocol</th>
+    </tr>
+</thead>
+<tbody></tbody>
+</table>
 {% endblock %}

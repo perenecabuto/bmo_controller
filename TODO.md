@@ -1,14 +1,12 @@
 TODO
 ====
 
-Python
-------
 
+Aplicacao
+---------
+
+Evitar recursividade infinita na execucao de commands e listeners
 Listener daemon
-Ignorar e logar eventos que já estão cadastrados, e exibir links para seus cadastros
-Remover eventos de tipos/codigos já cadastrados
-Nao deve ser possivel linkar o mesmo tipo de command em um listener
- * Nao aparecer na lista de cadastros de command
 
 
 Arduino
@@ -20,14 +18,6 @@ Completar 433
 Layout
 ------
 
-Usar bootsrap
-Deixar interface amigavel
-Responsivo
-
-
-Deploy
-------
-
-Configurar django
-Instalar app
-Instalar no server
+Poder arrastar commands
+Trocar cor
+Guardar configuracoes

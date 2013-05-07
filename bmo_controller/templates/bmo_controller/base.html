@@ -2,31 +2,49 @@
 
 <html>
     <head>
-    {% block head %}
+        {% block head %}
+        <link rel="stylesheet" href="{% static 'bmo_controller/css/bootstrap.min.css' %}" />
+        <!--<link rel="stylesheet" href="{% static 'bmo_controller/css/bootstrap-responsive.min.css' %}" />-->
+        <link rel="stylesheet" href="{% static 'bmo_controller/css/base.css' %}" />
+
         <script type="text/javascript" src="{% static 'bmo_controller/js/jquery.js' %}"></script>
         <script>
-        $(function() {
-            $('.post-link').on('click', function(e) {
-                e.preventDefault();
-                $('<form action="' + this.href + '" method="POST" />').submit();
-            });
+            $(function() {
+                $('.post-link').on('click', function(e) {
+                    e.preventDefault();
+                    $('<form action="' + this.href + '" method="POST" />').submit();
+                });
 
-            $('.ajax-link').live('click', function(e) {
-                e.preventDefault();
-                $.ajax({ url: this.href });
+                $('.ajax-link').live('click', function(e) {
+                    e.preventDefault();
+                    $.ajax({ url: this.href });
 
-                return false;
+                    return false;
+                });
+
+                $('.command-btn').each(function(idx, el) {
+                    var hue =
+                    'rgb(' + (Math.floor(Math.random(idx) * 256))
+                    + ','  + (Math.floor(Math.random(idx) * 256))
+                    + ','  + (Math.floor(Math.random(idx) * 256))
+                    + ')';
+                    $(el).css('background-color', hue);
+                });
             });
-        });
         </script>
-    {% endblock %}
+        {% endblock %}
     </head>
     <body>
-        <div class="menu">
-            <a href="{% url 'bmo_scan_events' %}">scan events</a>
-            <a href="{% url 'bmo_command_list' %}">command list</a>
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="{% url 'bmo_command_list' %}">command list</a></li>
+                <li><a href="{% url 'bmo_scan_events' %}">scan events</a></li>
+            </ul>
+
+            <div class="content">
+            {% block content %}
+            {% endblock %}
+            </div>
         </div>
-    {% block content %}
-    {% endblock %}
     </body>
 </html>

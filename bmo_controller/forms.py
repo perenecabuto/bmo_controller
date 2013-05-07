@@ -18,5 +18,5 @@ class ListenerForm(forms.ModelForm):
         fields = ('system_command', 'trigger_command')
 
 
-ListenerFormSet = modelformset_factory(Listener, form=ListenerForm, extra=3)
+ListenerFormSet = modelformset_factory(Listener, form=ListenerForm, extra=1)
 

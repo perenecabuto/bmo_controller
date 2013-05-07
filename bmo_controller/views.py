@@ -35,6 +35,11 @@ class BaseCommandMixin(object):
             self.listener_formset = ListenerFormSet(queryset=qs)
             self.listener_formset.data.update(self.request.GET)
 
+        if self.object:
+            for f in self.listener_formset.forms:
+                qs = f.fields['trigger_command'].queryset
+                f.fields['trigger_command'].queryset = qs.exclude(id=self.object.id)
+
         return form
 
     def get_context_data(self, **kwargs):
@@ -125,7 +130,7 @@ class ReplayCodeView(View):
 class ExectuteCommandView(View):
 
     def get(self, request, *args, **kwargs):
-        command = Command.objects.get(id=kwargs.get('command_id'))
+        command = Command.objects.get(slug=kwargs.get('slug'))
         command.execute()
 
         return HttpResponse('ok')
