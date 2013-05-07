@@ -40,7 +40,7 @@ $(function() {
 });
 
 function randCommandBtnColors() {
-    $('.command-btn').each(function(idx, el) {
+    $('.random-bg').each(function(idx, el) {
         var randColor = function() { return Math.floor(Math.random(idx) * 256) },
             hue = 'rgb(' + [randColor(), randColor(), randColor()].join(',') + ')';
 
