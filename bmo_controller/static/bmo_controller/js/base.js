@@ -24,10 +24,11 @@ $(function() {
 
     $('.nav li').each(function(idx, menuItem) {
         var item = $(menuItem),
-        link = item.find('a:eq(0)'),
-        re = new RegExp('^.+://' + window.location.host);
+            link = item.find('a:eq(0)'),
+            re = new RegExp('^.+://' + window.location.host),
+            currentUrl = window.location.href.replace(re, '').replace(/[\/#]$/, '');
 
-        if (link.attr('href') == window.location.href.replace(re, '')) {
+        if (link.attr('href') == currentUrl) {
             item.addClass('active');
         }
     });
