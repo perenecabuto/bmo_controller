@@ -1,6 +1,7 @@
 $(function() {
     $('body').on('click', '.post-link', function(e) {
         e.preventDefault();
+
         var form = $('<form action="' + this.href + '" method="POST" />'),
             csrf = $('[name=csrfmiddlewaretoken]:eq(0)');
 

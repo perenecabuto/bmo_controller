@@ -75,8 +75,10 @@ class CommandUpdateFormView(BaseCommandMixin, UpdateView):
     template_name = "bmo_controller/command_form.html"
 
 
-class CommandDeleteFormView(BaseCommandMixin, DeleteView):
-    pass
+class CommandDeleteFormView(DeleteView):
+    model = Command
+    template_name = "bmo_controller/command_delete.html"
+    success_url = reverse_lazy('bmo_command_list')
 
 
 class CommandListView(ListView):

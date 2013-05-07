@@ -1,0 +1,12 @@
+{% extends 'bmo_controller/base.html' %}
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+
+    <div class="alert">Remove command <strong>{{ object }}</strong>?</div>
+
+    <button class="btn btn-small btn-danger">Confirm</button>
+    <a href="{% url 'bmo_command_list' %}" class="btn btn-small btn-small">Do not remove</a>
+</form>
+{% endblock %}
