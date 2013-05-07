@@ -1,11 +1,14 @@
 {% extends 'bmo_controller/base.html' %}
 
 {% block head %}
+{{ block.super }}
+
 <script type="text/javascript">
 $(function() {
     $('#event-list a').each(function(idx, link) { $(link).text('http://' + location.host + link.text) });
 });
 </script>
+
 {% endblock %}
 
 {% block content %}
