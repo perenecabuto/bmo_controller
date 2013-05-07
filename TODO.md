@@ -5,18 +5,18 @@ TODO
 Aplicacao
 ---------
 
-Evitar recursividade infinita na execucao de commands e listeners
-Listener daemon
+Listener daemon +++
+Evitar recursividade infinita na execucao de commands e listeners ++
 
 
 Arduino
 -------
 
-Completar 433
+Completar 433 ++
 
 
 Layout
 ------
 
-Poder arrastar commands
-Guardar configuracoes
+Poder arrastar commands +
+Guardar configuracoes +
