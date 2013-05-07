@@ -8,7 +8,7 @@ $(function() {
         $(this).attr('last-click', new Date().getMilliseconds());
     });
 
-    $('.ajax-link').live('click', function(e) {
+    $('.ajax-link').on('click', function(e) {
         var lastClick = $(this).attr('last-click'),
             interval = Math.abs(new Date().getMilliseconds() - lastClick);
 
