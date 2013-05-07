@@ -22,13 +22,6 @@ $(function() {
         return false;
     });
 
-    randCommandBtnColors();
-
-    $('[data-rand-cmd-colors]').on('click', function() {
-        randCommandBtnColors();
-        return false;
-    });
-
     $('.nav li').each(function(idx, menuItem) {
         var item = $(menuItem),
         link = item.find('a:eq(0)'),
@@ -38,6 +31,13 @@ $(function() {
             item.addClass('active');
         }
     });
+
+    $('[data-rand-cmd-colors]').on('click', function() {
+        randCommandBtnColors();
+        return false;
+    });
+
+    randCommandBtnColors();
 });
 
 function randCommandBtnColors() {

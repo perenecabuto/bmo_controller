@@ -1,0 +1,50 @@
+{% extends 'bmo_controller/base.html' %}
+{% load static %}
+{% load bmo_controller %}
+
+{% block head %}
+    {{ block.super }}
+    <link type="text/css" rel="stylesheet" href="{% static 'bmo_controller/css/jquery.gridster.css' %}" />
+
+    <script type="text/javascript" src="{% static 'bmo_controller/js/utils.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bmo_controller/js/jquery.coords.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bmo_controller/js/jquery.collision.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bmo_controller/js/jquery.draggable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bmo_controller/js/jquery.gridster.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bmo_controller/js/jquery.gridster.extras.js' %}"></script>
+    <script>
+        var gridster;
+        $(function() {
+            gridster = $(".gridster .command-list").gridster({
+                widget_margins: [10, 15],
+                widget_base_dimensions: [140, 140]
+            });
+
+            $('.gridster .thumbnails').css({ 'margin-left': -30});
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="gridster">
+<ul class="command-list thumbnails">
+    {% for command in command_list %}
+    {% cycle '1' '2' '3' '4' '5' '6' as colnum silent %}
+
+    <li class="text-center" data-col="{{ colnum }}" data-row="{{ forloop.counter0|div:6|add:1 }}" data-sizex="1" data-sizey="1">
+        <div class="thumbnail">
+            <a href="{% url 'bmo_command_execute' slug=command.slug %}" class="ajax-link img-polaroid command-btn">{{ command.label }}</a>
+            <a href="{% url 'bmo_command_update' slug=command.slug %}" class="btn btn-small">edit</a>
+            <a href="{% url 'bmo_command_delete' slug=command.slug %}" class="btn btn-small post-link">remove</a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+</div>
+
+<br />
+<br />
+<a href="{% url 'bmo_command_create' %}" class="btn btn-small btn-primary">add a new command</a>
+<a href="#" class="btn btn-small" data-rand-cmd-colors="true">rand colors</a>
+
+{% endblock %}

@@ -9,7 +9,6 @@ body {
 
 .thumbnail {
     background-color: #fff;
-    margin-right: 10px;
 }
 
 .command-btn,
@@ -24,8 +23,4 @@ body {
     font-weight: bold;
     text-transform: uppercase;
     text-decoration: none;
-}
-
-[class*="span"] {
-    margin-left: 0;
 }
