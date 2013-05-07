@@ -7,6 +7,7 @@ import json
 from django.core.exceptions import ValidationError
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
+from django.core.urlresolvers import reverse
 
 from .driver import BmoDriver
 
@@ -21,6 +22,9 @@ class Command(models.Model):
 
     def __unicode__(self):
         return self.label
+
+    def get_absolute_url(self):
+        return reverse('bmo_command_execute', kwargs={'slug': self.slug})
 
     def execute(self):
         driver = BmoDriver()

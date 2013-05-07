@@ -30,6 +30,16 @@
                     + ')';
                     $(el).css('background-color', hue);
                 });
+
+                $('.nav li').each(function(idx, menuItem) {
+                    var item = $(menuItem),
+                        link = item.find('a:eq(0)'),
+                        re = new RegExp('^.+://' + window.location.host);
+
+                    if (link.attr('href') == window.location.href.replace(re, '')) {
+                        item.addClass('active');
+                    }
+                });
             });
         </script>
         {% endblock %}
@@ -37,7 +47,8 @@
     <body>
         <div class="container">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="{% url 'bmo_command_list' %}">command list</a></li>
+                <li><a href="{% url 'bmo_command_list' %}">command list</a></li>
+                <li><a href="{% url 'bmo_command_urls' %}">command urls</a></li>
                 <li><a href="{% url 'bmo_scan_events' %}">scan events</a></li>
             </ul>
 

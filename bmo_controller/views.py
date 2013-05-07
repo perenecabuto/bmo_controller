@@ -84,6 +84,11 @@ class CommandListView(ListView):
     model = Command
 
 
+class CommandUrlListView(ListView):
+    template_name = "bmo_controller/command_urls.html"
+    model = Command
+
+
 # Events
 
 

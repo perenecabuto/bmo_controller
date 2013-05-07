@@ -7,7 +7,7 @@ from django.views.generic.base import RedirectView
 from .views import (
     ScanEventsView, ScanEventsJSONView,
     CommandCreateFormView, CommandUpdateFormView, CommandDeleteFormView, CommandListView,
-    ReplayCodeView, ExectuteCommandView,
+    ReplayCodeView, ExectuteCommandView, CommandUrlListView
 )
 
 urlpatterns = patterns(
@@ -19,8 +19,9 @@ urlpatterns = patterns(
     url(r'^command/(?P<slug>[\w-]+)$', CommandUpdateFormView.as_view(), name='bmo_command_update'),
     url(r'^command/(?P<slug>[\w-]+)/delete$', CommandDeleteFormView.as_view(), name='bmo_command_delete'),
     url(r'^commands/?$', CommandListView.as_view(), name='bmo_command_list'),
+    url(r'^commands/urls/?$', CommandUrlListView.as_view(), name='bmo_command_urls'),
 
+    url(r'^execute/(?P<slug>[\w-]+)$', ExectuteCommandView.as_view(), name='bmo_command_execute'),
     url(r'^replay/(?P<type>\w+)/(?P<code>\w+)/(?P<bits>\w+)/(?P<protocol>\w+)/?$', ReplayCodeView.as_view(), name='bmo_replay_command'),
-    url(r'^execute/(?P<slug>[\w-]+)$', ExectuteCommandView.as_view(), name='bmo_execute_command'),
 )
 
