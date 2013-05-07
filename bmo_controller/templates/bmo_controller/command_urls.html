@@ -1,5 +1,13 @@
 {% extends 'bmo_controller/base.html' %}
 
+{% block head %}
+<script type="text/javascript">
+$(function() {
+    $('#event-list a').each(function(idx, link) { $(link).text('http://' + location.host + link.text) });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <table class="table table-striped events-table" id="event-list">
     {% for command in command_list %}
