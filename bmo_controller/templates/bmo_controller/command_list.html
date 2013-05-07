@@ -1,6 +1,8 @@
 {% extends 'bmo_controller/base.html' %}
 
 {% block content %}
+{% csrf_token %}
+
 <ul class="thumbnails">
     {% for command in command_list %}
     <li class="span2 text-center">

@@ -1,7 +1,13 @@
 $(function() {
     $('body').on('click', '.post-link', function(e) {
         e.preventDefault();
-        $('<form action="' + this.href + '" method="POST" />').submit();
+        var form = $('<form action="' + this.href + '" method="POST" />'),
+            csrf = $('[name=csrfmiddlewaretoken]:eq(0)');
+
+        form.append(csrf);
+        form.submit();
+
+        return false;
     })
     .on('mousedown', '.ajax-link', function(e) {
         $(this).attr('last-click', new Date().getMilliseconds());
