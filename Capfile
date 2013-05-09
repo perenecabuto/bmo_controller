@@ -23,7 +23,10 @@ role :web, domain
 role :app, domain
 
 namespace :deploy do
-  task :start do ; end
+  task :start do
+    run "cd #{current_path} && DJANGO_SETTINGS_MODULE=settings ~/virtualenvs/#{application}/bin/gunicorn wsgi -c gunicorn.conf"
+  end
+
   task :stop do ; end
 
   # this overrides a rails specific thing.
