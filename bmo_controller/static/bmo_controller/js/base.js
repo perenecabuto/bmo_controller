@@ -1,31 +1,50 @@
 $(function() {
-    $('body').on('click', '.post-link', function(e) {
-        e.preventDefault();
+    $('body')
+        .on('click', '.post-link', function(e) {
+            e.preventDefault();
 
-        var form = $('<form action="' + this.href + '" method="POST" />'),
-            csrf = $('[name=csrfmiddlewaretoken]:eq(0)');
+            var form = $('<form action="' + this.href + '" method="POST" />'),
+                csrf = $('[name=csrfmiddlewaretoken]:eq(0)');
 
-        form.append(csrf);
-        form.submit();
+            form.append(csrf);
+            form.submit();
 
-        return false;
-    })
-    .on('mousedown', '.ajax-link', function(e) {
-        $(this).attr('last-click', new Date().getMilliseconds());
-    })
-    .on('click', '.ajax-link', function(e) {
-        var lastClick = $(this).attr('last-click'),
-            interval = Math.abs(new Date().getMilliseconds() - lastClick);
+            return false;
+        })
+        .on('mousedown', '.ajax-link', function(e) {
+            return $(this).attr('last-click', new Date().getTime());
+        })
+        .on('click', '.ajax-link', function(e) {
+            var that = $(this),
+                now = new Date().getTime(),
+                lastClick = parseInt(that.attr('last-click')) || now,
+                interval = Math.abs(now - lastClick);
 
-        e.preventDefault();
-        $(this).attr('last-click', null);
+            e.preventDefault();
 
-        if (interval <= 100) {
-            $.ajax({ url: this.href });
-        }
+            console.log(that.attr('disabled'), lastClick, now, interval);
 
-        return false;
-    });
+            if (that.attr('disabled')) {
+                return false;
+            }
+
+            if (interval <= 300) {
+                var enableLink = function(response) {
+                    that.animate({opacity: 1}, {
+                        complete: function() {
+                            that.attr('disabled', false);
+                        }
+                    });
+                };
+
+                that.animate({'opacity': 0.3});
+                that.attr('disabled', true);
+
+                $.ajax({ url: this.href, complete: enableLink });
+            }
+
+            return false;
+        });
 
     $('[data-rand-cmd-colors]').on('click', function() {
         randCommandBtnColors();
