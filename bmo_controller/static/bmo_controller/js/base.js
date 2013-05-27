@@ -22,8 +22,6 @@ $(function() {
 
             e.preventDefault();
 
-            console.log(that.attr('disabled'), lastClick, now, interval);
-
             if (that.attr('disabled')) {
                 return false;
             }
