@@ -2,3 +2,4 @@ Django==1.5.1
 django-extensions==1.1.1
 django-debug-toolbar
 pyserial==2.6
+gunicorn==0.17.4
