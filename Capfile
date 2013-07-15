@@ -24,29 +24,32 @@ role :app, domain
 
 namespace :deploy do
   task :start do
+    run "~/virtualenvs/#{application}/bin/pip install -r #{current_path}/deploy_requirements.txt"
+    run "rm #{current_path}/bmo_controller.sqlite3 && ln -sf #{shared_path}/bmo_controller.sqlite3 #{current_path}"
     run "cd #{current_path} && DJANGO_SETTINGS_MODULE=settings ~/virtualenvs/#{application}/bin/gunicorn wsgi -c gunicorn.conf"
   end
 
-  task :stop do ; end
+  task :stop do
+    run "killall -9 gunicorn > /dev/null 2>&1 &"
+  end
 
   # this overrides a rails specific thing.
   task :finalize_update do ; end
   task :migrate         do ; end
-
-  desc "Restart Application"
-  task :restart, :roles => :app do
-    run "~/virtualenvs/#{application}/bin/pip install -r #{current_path}/deploy_requirements.txt"
-    run "killall -9 gunicorn"
-    run "rm #{current_path}/bmo_controller.sqlite3 && ln -sf #{shared_path}/bmo_controller.sqlite3 #{current_path}"
-    run "cd #{current_path} && DJANGO_SETTINGS_MODULE=settings ~/virtualenvs/#{application}/bin/gunicorn wsgi -c gunicorn.conf"
-  end
 
   task :setup_virtualenv do
     run "virtualenv ~/virtualenvs/#{application}"
   end
 
   after 'deploy:setup', 'deploy:setup_virtualenv'
-  after 'deploy:restart', 'bmo_daemon:start'
+
+  before 'deploy:start', 'deploy:stop'
+  after 'deploy:start', 'bmo_daemon:start'
+
+  after 'deploy:stop', 'bmo_daemon:stop'
+
+  before 'deploy:restart', 'deploy:stop'
+  after 'deploy:restart', 'deploy:start'
 end
 
 namespace :bmo_daemon do
@@ -59,6 +62,7 @@ namespace :bmo_daemon do
     end
 
     before 'bmo_daemon:start', 'bmo_daemon:stop'
+    after 'deploy:start', 'bmo_daemon:start'
 end
 
 namespace :log do
