@@ -1,4 +1,5 @@
-Django==1.5.1
+Django==1.6.4
 django-extensions==1.1.1
-django-debug-toolbar
-pyserial==2.6
+pyserial==2.7
+gunicorn==18.0
+ino==0.3.6

@@ -47,8 +47,7 @@ class Listener(models.Model):
             subprocess.call(self.system_command.split(" "))
 
         elif self.trigger_command:
-            driver = BmoDriver()
-            driver.send_code(self.trigger_command.type, self.trigger_command.code)
+            self.trigger_command.execute()
 
     def save(self, **kwargs):
 

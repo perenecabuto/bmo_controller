@@ -8,11 +8,16 @@ from serial import Serial
 class BmoDriver(object):
 
     def get_connetion(self):
-        port = '/dev/ttyUSB0'
-        found_devices = glob('/dev/serial/by-id/*FTDI*')
+        found_devices = (
+            glob('/dev/serial/by-id/*Arduino*') or  # Arduino uno
+            glob('/dev/serial/by-id/*FTDI*') or  # Old Arduinos
+            glob('/dev/tty.usbmodem*')  # Mac OS X
+        )
 
-        if found_devices:
-            port = os.path.realpath(found_devices[0])
+        if not found_devices:
+            raise NoBMODeviceFoundException
+
+        port = os.path.realpath(found_devices[0])
 
         return Serial(port, 9600)
 
@@ -23,3 +28,7 @@ class BmoDriver(object):
     def get_bmo_message(self):
         connection = self.get_connetion()
         return connection.readline()
+
+
+class NoBMODeviceFoundException(Exception):
+    pass
