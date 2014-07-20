@@ -86,7 +86,7 @@ namespace :deploy do
     end
   end
 
-  after 'deploy:updated', 'deploy:setup_virtualenv'
+  #after 'deploy:updated', 'deploy:setup_virtualenv'
   #before 'deploy:start', 'deploy:stop'
 
   #before 'deploy:restart', 'deploy:stop'

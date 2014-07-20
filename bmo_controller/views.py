@@ -10,23 +10,21 @@ from django.views.generic import View
 from django.views.generic.list import BaseListView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-from bmo_controller.models import Command, Listener, Events
+from bmo_controller.models import BmoCommand, Listener, Events
 from bmo_controller.forms import (
-    CommandForm, ListenerFormSet
+    BmoCommandForm, ListenerFormSet
 )
 
-from bmo_controller.driver import BmoDriver
 
-# Command
+# BmoCommand
 
-
-class BaseCommandMixin(object):
-    form_class = CommandForm
-    model = Command
+class BaseBmoCommandMixin(object):
+    form_class = BmoCommandForm
+    model = BmoCommand
     success_url = reverse_lazy('bmo_command_list')
 
     def get_form(self, form):
-        form = super(BaseCommandMixin, self).get_form(form)
+        form = super(BaseBmoCommandMixin, self).get_form(form)
 
         if self.request.method == 'POST':
             self.listener_formset = ListenerFormSet(self.request.POST)
@@ -43,7 +41,7 @@ class BaseCommandMixin(object):
         return form
 
     def get_context_data(self, **kwargs):
-        context_data = super(BaseCommandMixin, self).get_context_data(**kwargs)
+        context_data = super(BaseBmoCommandMixin, self).get_context_data(**kwargs)
         context_data['listener_formset'] = self.listener_formset
 
         return context_data
@@ -60,10 +58,10 @@ class BaseCommandMixin(object):
                 except ValidationError:
                     pass
 
-        return super(BaseCommandMixin, self).form_valid(form)
+        return super(BaseBmoCommandMixin, self).form_valid(form)
 
 
-class CommandCreateFormView(BaseCommandMixin, CreateView):
+class BmoCommandCreateFormView(BaseBmoCommandMixin, CreateView):
     template_name = "bmo_controller/command_form.html"
 
     def get_initial(self):
@@ -71,28 +69,27 @@ class CommandCreateFormView(BaseCommandMixin, CreateView):
             return {k: str(v) for k, v in self.request.GET.items()}
 
 
-class CommandUpdateFormView(BaseCommandMixin, UpdateView):
+class BmoCommandUpdateFormView(BaseBmoCommandMixin, UpdateView):
     template_name = "bmo_controller/command_form.html"
 
 
-class CommandDeleteFormView(DeleteView):
-    model = Command
+class BmoCommandDeleteFormView(DeleteView):
+    model = BmoCommand
     template_name = "bmo_controller/command_delete.html"
     success_url = reverse_lazy('bmo_command_list')
 
 
-class CommandListView(ListView):
+class BmoCommandListView(ListView):
     template_name = "bmo_controller/command_list.html"
-    model = Command
+    model = BmoCommand
 
 
-class CommandUrlListView(ListView):
+class BmoCommandUrlListView(ListView):
     template_name = "bmo_controller/command_urls.html"
-    model = Command
+    model = BmoCommand
 
 
 # Events
-
 
 class EventsMixin(object):
 
@@ -128,16 +125,16 @@ class ScanEventsJSONView(EventsMixin, BaseListView):
 class ReplayCodeView(View):
 
     def get(self, request, *args, **kwargs):
-        driver = BmoDriver()
-        driver.send_code(kwargs.get('type'), kwargs.get('code'), kwargs.get('bits'), kwargs.get('protocol'))
+        command = BmoCommand(**kwargs)
+        command.execute()
 
         return HttpResponse('ok')
 
 
-class ExectuteCommandView(View):
+class ExectuteBmoCommandView(View):
 
     def get(self, request, *args, **kwargs):
-        command = Command.objects.get(slug=kwargs.get('slug'))
+        command = BmoCommand.objects.get(slug=kwargs.get('slug'))
         command.execute()
 
         return HttpResponse('ok')

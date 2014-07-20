@@ -3,12 +3,12 @@
 from django import forms
 from django.forms.models import modelformset_factory
 
-from .models import Command, Listener
+from .models import BmoCommand, Listener
 
 
-class CommandForm(forms.ModelForm):
+class BmoCommandForm(forms.ModelForm):
     class Meta:
-        model = Command
+        model = BmoCommand
 
 
 class ListenerForm(forms.ModelForm):

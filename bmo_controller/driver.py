@@ -9,18 +9,21 @@ class BmoDriver(object):
 
     @property
     def connection(self):
-        found_devices = (
-            glob('/dev/serial/by-id/*Arduino*') or  # Arduino uno
-            glob('/dev/serial/by-id/*FTDI*') or  # Old Arduinos
-            glob('/dev/tty.usbmodem*')  # Mac OS X
-        )
+        if not getattr(self, '_connection', None):
+            found_devices = (
+                glob('/dev/serial/by-id/*Arduino*') or  # Arduino uno
+                glob('/dev/serial/by-id/*FTDI*') or  # Old Arduinos
+                glob('/dev/tty.usbmodem*')  # Mac OS X
+            )
 
-        if not found_devices:
-            raise NoBMODeviceFoundException
+            if not found_devices:
+                raise NoBMODeviceFoundException
 
-        port = os.path.realpath(found_devices[0])
+            port = os.path.realpath(found_devices[0])
 
-        return Serial(port, 9600)
+            self._connection = Serial(port, 9600)
+
+        return self._connection
 
     def send_code(self, signal_type, code, bits=0, protocol=""):
         message = "%s %s %s %s\n" % (signal_type, code, bits, protocol)

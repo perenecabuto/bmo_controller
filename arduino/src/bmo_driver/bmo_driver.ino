@@ -80,12 +80,14 @@ void sendCode(bmo_message message) {
     switch (message.type) {
         case RF315:
             rf.enableTransmit(RF315_TX_PIN);
+            delay(80);
             rf.send(message.code, message.bits);
             delay(20);
             break;
 
         case RF433:
             rf.enableTransmit(RF433_TX_PIN);
+            delay(80);
             rf.send(message.code, message.bits);
             delay(20);
             break;

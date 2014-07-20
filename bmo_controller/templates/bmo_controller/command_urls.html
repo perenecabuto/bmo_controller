@@ -13,7 +13,7 @@ $(function() {
 
 {% block content %}
 <table class="table table-striped events-table" id="event-list">
-    {% for command in command_list %}
+    {% for command in bmocommand_list %}
     <tr>
         <td width="20%">{{ command.label }}</td>
         <td><a href="{{ command.get_absolute_url }}" class="ajax-link">{{ command.get_absolute_url }}</a></td>

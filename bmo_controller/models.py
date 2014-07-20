@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
-
 import json
+import time
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -11,8 +11,10 @@ from django.core.urlresolvers import reverse
 
 from .driver import BmoDriver
 
+driver = BmoDriver()
 
-class Command(models.Model):
+
+class BmoCommand(models.Model):
     slug = AutoSlugField(populate_from='label', overwrite='true')
     label = models.CharField(unique=True, max_length=255)
     type = models.CharField(max_length=32)
@@ -27,17 +29,18 @@ class Command(models.Model):
         return reverse('bmo_command_execute', kwargs={'slug': self.slug})
 
     def execute(self):
-        driver = BmoDriver()
+        print "sending " + unicode(self)
         driver.send_code(self.type, self.code, self.bits, self.protocol)
 
     class Meta:
+        db_table = 'bmo_controller_command'
         unique_together = ("type", "code", "protocol", "bits")
 
 
 class Listener(models.Model):
-    command = models.ForeignKey(Command)
+    command = models.ForeignKey(BmoCommand)
     system_command = models.CharField(max_length=255, null=True, blank=True)
-    trigger_command = models.ForeignKey(Command, related_name="trigger_command", null=True, blank=True)
+    trigger_command = models.ForeignKey(BmoCommand, related_name="trigger_command", null=True, blank=True)
 
     def execute(self):
         if self.system_command.strip():

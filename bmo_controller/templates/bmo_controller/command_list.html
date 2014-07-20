@@ -9,7 +9,7 @@
         </div>
     </li>
 
-    {% for command in command_list %}
+    {% for command in bmocommand_list %}
     <li class="span2 text-center command" id="command-{{ command.slug }}">
         <div class="thumbnail">
             <a href="{% url 'bmo_command_execute' slug=command.slug %}" class="ajax-link img-polaroid command-btn random-bg">{{ command.label }}</a>
