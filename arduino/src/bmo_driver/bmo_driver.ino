@@ -12,9 +12,16 @@
 #define RF315_RX_IRQ 0 // D-PIN 3
 #define RF315_PULSE_LEN 297
 
+
+#define RF433_TX_PIN 11
+#define RF433_RX_IRQ 1 // D-PIN 4
+#define RF433_PULSE_LEN 297
+
+
 #define IR1_RX_PIN 12
 
 RCSwitch rf315 = RCSwitch();
+RCSwitch rf433 = RCSwitch();
 IRrecv ir1RX(IR1_RX_PIN);
 IRsend ir1TX;
 
@@ -32,6 +39,10 @@ void setup() {
     rf315.enableReceive(RF315_RX_IRQ);
     rf315.enableTransmit(RF315_TX_PIN);
     rf315.setPulseLength(RF315_PULSE_LEN);
+    
+    rf433.enableReceive(RF433_RX_IRQ);
+    rf433.enableTransmit(RF433_TX_PIN);
+    rf433.setPulseLength(RF433_PULSE_LEN);
 }
 
 void loop() {
@@ -82,8 +93,13 @@ void sendCode(bmo_message message) {
     switch (message.type) {
         case RF315:
             /*rf315.enableTransmit(RF315_TX_PIN);*/
-            ir1RX.resume();
             rf315.send(message.code, message.bits);
+            delay(20);
+            break;
+
+        case RF433:
+            /*rf433.enableTransmit(RF315_TX_PIN);*/
+            rf433.send(message.code, message.bits);
             delay(20);
             break;
 
@@ -134,6 +150,20 @@ String getBMOJson() {
         }
 
         rf315.resetAvailable();
+        delay(30);
+    }
+
+    if (rf433.available()) {
+        long value = rf433.getReceivedValue();
+
+        if (value != 0) {
+            bmoJson += getScanJSON(getBMOTypeName(RF433), value,
+                rf433.getReceivedBitlength(),
+                rf433.getReceivedProtocol()
+            );
+        }
+
+        rf433.resetAvailable();
         delay(30);
     }
 
