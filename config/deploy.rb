@@ -81,6 +81,7 @@ namespace :deploy do
 
   task :setup_virtualenv do
     on roles(:app) do
+      execute "rm -rf ~/virtualenvs/#{fetch :application}"
       execute "virtualenv ~/virtualenvs/#{fetch :application}"
     end
   end
