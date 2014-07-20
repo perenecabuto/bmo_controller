@@ -30,9 +30,6 @@ class Command(models.Model):
         driver = BmoDriver()
         driver.send_code(self.type, self.code, self.bits, self.protocol)
 
-        for listener in self.listener_set.all():
-            listener.execute()
-
     class Meta:
         unique_together = ("type", "code", "protocol", "bits")
 
@@ -46,7 +43,7 @@ class Listener(models.Model):
         if self.system_command.strip():
             subprocess.call(self.system_command.split(" "))
 
-        elif self.trigger_command:
+        if self.trigger_command:
             self.trigger_command.execute()
 
     def save(self, **kwargs):
