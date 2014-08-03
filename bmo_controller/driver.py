@@ -3,6 +3,7 @@
 import os
 from glob import glob
 from serial import Serial
+from serial.serialposix import SerialException
 
 
 class BmoDriver(object):
@@ -21,13 +22,17 @@ class BmoDriver(object):
 
             port = os.path.realpath(found_devices[0])
 
-            self._connection = Serial(port, 9600)
+            self._connection = Serial(port, 115200)
 
         return self._connection
 
     def send_code(self, signal_type, code, bits=0, protocol=""):
         message = "%s %s %s %s\n" % (signal_type, code, bits, protocol)
-        self.connection.write(str(message))
+        try:
+            self.connection.write(str(message))
+        except SerialException:
+            self._connection = None
+            self.send_code(signal_type, code, bits, protocol)
 
     def get_bmo_message(self):
         return self.connection.readline()

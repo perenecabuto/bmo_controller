@@ -29,10 +29,10 @@ boolean messageCompleted = false;
 
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
 
-    /*rf.setPulseLength(100);*/
     ir1RX.enableIRIn();
+    rf.setPulseLength(297);
 }
 
 void loop() {
@@ -45,6 +45,7 @@ void loop() {
     if (msg != "" && messageCompleted) {
         bmo_message message = parseBMOMessage(msg);
 
+        Serial.println(msg);
         sendCode(message);
 
         msg = "";
@@ -80,14 +81,12 @@ void sendCode(bmo_message message) {
     switch (message.type) {
         case RF315:
             rf.enableTransmit(RF315_TX_PIN);
-            delay(80);
             rf.send(message.code, message.bits);
             delay(20);
             break;
 
         case RF433:
             rf.enableTransmit(RF433_TX_PIN);
-            delay(80);
             rf.send(message.code, message.bits);
             delay(20);
             break;
@@ -131,13 +130,11 @@ String getBMOJson() {
     bmoJson += getRFMessage(RF315_RX_IRQ, RF315);
     bmoJson += getRFMessage(RF433_RX_IRQ, RF433);
 
-
     if (ir1RX.decode(&results)) {
         long value = results.value;
         bmoJson += getScanJSON(getBMOTypeName(IR1), value, results.bits, results.decode_type);
         ir1RX.resume();
     }
-
 
     return bmoJson;
 }
@@ -159,7 +156,7 @@ String getRFMessage(int rxIRQ, int rfType) {
         }
 
         rf.resetAvailable();
-        /*delay(30);*/
+        delay(20);
     }
 
     rf.disableReceive();
